@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:shop_flutter/src/models/product.dart';
+import 'package:shop_flutter/src/product_detail/models/product.dart';
 import 'package:shop_flutter/src/service/base_api.dart';
 
 class ProductApi extends BaseApi {

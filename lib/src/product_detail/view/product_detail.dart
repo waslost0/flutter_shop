@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_flutter/src/home/providers/product_detail_provider.dart';
+import 'package:shop_flutter/src/categories/providers/category_provider.dart';
+import 'package:shop_flutter/src/products/providers/product_detail_provider.dart';
+
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({Key? key}) : super(key: key);
@@ -21,13 +23,14 @@ class ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Future<void> loadData() async {
-    var cart = context.read<ProductDetailDataProvider>();
-    cart.getCurrentProductData(cart.product.productId);
+    var productDetailProvider = context.read<ProductDetailDataProvider>();
+    productDetailProvider.getCurrentProductData(productDetailProvider.product.productId);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    var categoryDataProvider = context.watch<CategoryDataProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text("Товар"),
@@ -37,24 +40,26 @@ class ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget buildBody(BuildContext context) {
-    var cart = context.watch<ProductDetailDataProvider>();
+    var productDetailProvider = context.watch<ProductDetailDataProvider>();
 
     return Container(
-      child: cart.loading
+      child: productDetailProvider.loading
           ? Container(
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             )
           : Padding(
               padding: const EdgeInsets.all(2.0),
               child: Card(
-                elevation: 5,
+                elevation: 10,
                 child: Column(
                   children: [
                     CachedNetworkImage(
                       // alignment: Alignment.topLeft,
-                      imageUrl: cart.product.images!.length == 0
+                      imageUrl: productDetailProvider.product.imageUrl == null
                           ? ''
-                          : cart.product.images![0],
+                          : productDetailProvider.product.imageUrl!,
                       height: MediaQuery.of(context).size.height / 4,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.fitHeight,
@@ -72,7 +77,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        cart.product.title.toString(),
+                        productDetailProvider.product.title.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -81,15 +86,14 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-
-                    if (cart.product.productDescription != null)
+                    if (productDetailProvider.product.productDescription != null)
                       Padding(
                         padding: const EdgeInsets.only(
                             top: 0, left: 15, right: 15, bottom: 10),
-                        child: Text(cart.product.productDescription.toString()),
+                        child: Text(productDetailProvider.product.productDescription.toString()),
                       ),
                     Text(
-                      '${cart.product.price.toString()} ₽',
+                      '${productDetailProvider.product.price.toString()} ₽',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/main_menu/providers/bottom_navigation_provider.dart';
 
 import '../../categories/views/category_screen.dart';
-import '../../home/views/home_screen.dart';
+import '../../products/views/product_screen.dart';
 
 class MainMenu extends StatefulWidget {
   MainMenu({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   var currentTab = [
-    HomeScreen(),
+    ProductScreen(),
     CategoryScreen(),
   ];
 

@@ -7,8 +7,6 @@ class CategoryDataProvider with ChangeNotifier {
   Category category = Category();
   int categoryId = 0;
   bool loading = false;
-  bool isProductsByCategory = false;
-  String currentCategory = '';
 
   CategoryApi categoriesApi = CategoryApi();
 

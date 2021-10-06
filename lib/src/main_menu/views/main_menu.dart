@@ -48,12 +48,3 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 }
-
-class Test extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text('TEST')),
-    );
-  }
-}

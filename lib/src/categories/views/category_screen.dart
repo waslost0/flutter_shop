@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/categories/providers/category_provider.dart';
+import 'package:shop_flutter/src/products/models/product.dart';
+import 'package:shop_flutter/src/products/views/product_screen.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class CategoryScreenState extends State<CategoryScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -22,8 +25,8 @@ class CategoryScreenState extends State<CategoryScreen> {
   }
 
   Future<void> loadData() async {
-    var cart = context.read<CategoryDataProvider>();
-    cart.getCategoriesData(context);
+    var categoryDataProvider = context.read<CategoryDataProvider>();
+    categoryDataProvider.getCategoriesData(context);
     setState(() {});
   }
 
@@ -42,34 +45,41 @@ class CategoryScreenState extends State<CategoryScreen> {
   }
 
   Widget buildBody(BuildContext context) {
-    var cart = context.watch<CategoryDataProvider>();
+    var categoryDataProvider = context.watch<CategoryDataProvider>();
 
     return Container(
-      child: cart.loading
+      child: categoryDataProvider.loading
           ? Container(
               child: Center(child: CircularProgressIndicator()),
             )
           : GridView.builder(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  // childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10),
-              itemCount: cart.allCategories.length,
+                maxCrossAxisExtent: 200,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: categoryDataProvider.allCategories.length,
               itemBuilder: (BuildContext context, int index) {
-                Category category = cart.allCategories[index];
+                Category category = categoryDataProvider.allCategories[index];
 
                 return GestureDetector(
                   onTap: () {
-                    cart.categoryId = category.categoryId!;
-                    cart.isProductsByCategory = true;
-                    cart.currentCategory = category.title.toString();
-                    Navigator.pushNamed(
-                      context,
-                      '/products',
+                    //TODO: try check category.hasSubcategories. Open CategoryScreen with argument = parentCategory
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProductScreen(category: category),
+                      ),
                     );
+
+                    // Navigator.pushNamed(
+                    //   context,
+                    //   '/products',
+                    //   arguments: category,
+                    //
+                    //   //TODO: add category to args: https://flutter.dev/docs/cookbook/navigation/navigate-with-arguments
+                    // );
                   },
-                  child: buildProductCard(context, category),
+                  child: buildCategoryCard(context, category),
                 );
               },
               scrollDirection: Axis.vertical,
@@ -77,47 +87,52 @@ class CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget buildProductCard(BuildContext context, product) {
+  Widget buildCategoryCard(BuildContext context, category) {
     return Card(
       child: Column(
         children: [
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
-                height: MediaQuery.of(context).size.height / 10,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.scaleDown,
-                placeholder: (context, url) =>
-                    Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/img_not_found.jpg'),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                product.title.toString(),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 15,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
+          buildCategoryImage(category),
+          buildCategoryTitle(category),
         ],
+      ),
+    );
+  }
+
+  Widget buildCategoryImage(category) {
+    return Expanded(
+      flex: 2,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: CachedNetworkImage(
+          imageUrl: category.imageUrl,
+          placeholder: (context, url) =>
+              Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/img_not_found.jpg'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCategoryTitle(category) {
+    return Expanded(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          category.title.toString(),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+            fontSize: 15,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

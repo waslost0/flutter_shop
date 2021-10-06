@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:shop_flutter/src/product_detail/models/product.dart';
+import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/service/product_api.dart';
 
+//TODO: make not global
 class ProductsDataProvider with ChangeNotifier {
   List<Product> allProducts = [];
-  Product product = Product();
-  int productId = 0;
   bool loading = false;
-
   ProductApi productsApi = ProductApi();
 
-  getProductsData(context) async {
+  getProductsData({categoryId}) async {
     loading = true;
-    allProducts = await productsApi.getAllProducts();
-    loading = false;
-    notifyListeners();
-  }
-
-  getProductsOfCategory(context, categoryId) async {
-    loading = true;
-    allProducts = await productsApi.getAllProductsByCategoryId(categoryId);
+    if (categoryId != null) {
+      allProducts = await productsApi.getProducts(categoryId: categoryId);
+    } else {
+      allProducts = await productsApi.getProducts();
+    }
     loading = false;
     notifyListeners();
   }

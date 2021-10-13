@@ -10,6 +10,7 @@ class ProductDetailDataProvider with ChangeNotifier {
 
   Future<void> getCurrentProductData(int productId) async {
     loading = true;
+    notifyListeners();
     product = await productsApi.getProductDetail(productId);
     loading = false;
     notifyListeners();

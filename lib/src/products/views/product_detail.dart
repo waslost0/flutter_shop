@@ -1,14 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/product_detail_provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
+  final Product? product;
+
   const ProductDetailPage({
     Key? key,
-  }) : super(key: key,);
+    this.product,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,19 +19,29 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class ProductDetailPageState extends State<ProductDetailPage> {
-  Product? product;
+  final ProductDetailDataProvider dataProvider = ProductDetailDataProvider();
 
   @override
   void initState() {
     super.initState();
+    dataProvider.addListener((onDataProviderChanged));
+    loadData();
+  }
 
-    // loadData();
+  @override
+  void dispose() {
+    dataProvider.removeListener(onDataProviderChanged);
+    super.dispose();
+  }
+
+  void onDataProviderChanged() {
+    setState(() {});
   }
 
   Future<void> loadData() async {
-    var productDetailProvider = context.read<ProductDetailDataProvider>();
-    // productDetailProvider.getCurrentProductData();
-    setState(() {});
+    var product = widget.product;
+    dataProvider.getCurrentProductData(product!.productId!);
+    print('loadData Product ${product.productId}');
   }
 
   @override
@@ -42,7 +54,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductImage(BuildContext context,Product product) {
+  Widget buildProductImage(BuildContext context, Product product) {
     return CachedNetworkImage(
       imageUrl: product.imageUrl ?? '',
       height: 150,
@@ -94,31 +106,37 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductDetail(BuildContext context) {
-    var product = ModalRoute.of(context)!.settings.arguments as Product;
-    print(product.title);
+  Widget buildProductDetail(BuildContext context, Product product) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        buildProductImage(context, product),
-        buildProductTitle(context, product),
+        if (product.imageUrl != null)
+          buildProductImage(context, product),
+        if (product.title != null)
+          buildProductTitle(context, product),
         if (product.productDescription != null)
           buildProductDescription(context, product.productDescription),
-        buildProductPrice(context, product.price)
+        if (product.productDescription != null)
+          buildProductPrice(context, product.price)
       ],
     );
   }
 
   Widget buildBody(BuildContext context) {
+    var product = widget.product!;
+
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: Card(
           elevation: 10,
-          child: buildProductDetail(context),
+          child: dataProvider.loading
+              ? buildProductDetail(context, product)
+              : buildProductDetail(context, dataProvider.product!),
         ),
       ),
     );
   }
 }
+

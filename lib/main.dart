@@ -22,9 +22,7 @@ List<SingleChildWidget> providers = [
     create: (context) => CategoryDataProvider(),
   ),
   //TODO: remove
-  ChangeNotifierProvider<ProductDetailDataProvider>(
-    create: (context) => ProductDetailDataProvider(),
-  ),
+
   ChangeNotifierProvider<BottomNavigationBarProvider>(
     create: (context) => BottomNavigationBarProvider(),
     // builder: (context) => BottomNavigationBarProvider(),

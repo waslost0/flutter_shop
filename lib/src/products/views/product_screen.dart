@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/products_data_provider.dart';
+import 'package:shop_flutter/src/products/views/product_detail.dart';
 import 'package:shop_flutter/src/products/views/product_list_item.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     dataProvider.getProductsData(
       categoryId: category?.categoryId,
     );
-    setState(() {});
+    // setState(() {});
   }
 
   @override
@@ -103,10 +104,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   void onListViewItemTap(BuildContext context, Product product) async {
-    Navigator.pushNamed(
-      context,
-      '/detail',
-      arguments: product,
+    product.productDescription = "local description";
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(
+          product: product,
+        ),
+      ),
     );
   }
 

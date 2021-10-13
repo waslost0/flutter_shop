@@ -18,9 +18,6 @@ void main() {
 
 List<SingleChildWidget> providers = [
   //TODO: remove, make not global. Create on product detail screen
-  ChangeNotifierProvider<ProductsDataProvider>(
-    create: (context) => ProductsDataProvider(),
-  ),
   ChangeNotifierProvider<CategoryDataProvider>(
     create: (context) => CategoryDataProvider(),
   ),

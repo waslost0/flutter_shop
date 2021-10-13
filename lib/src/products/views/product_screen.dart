@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/products_data_provider.dart';
@@ -21,19 +20,29 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  //TODO: add own ProductsDataProvider
+  final ProductsDataProvider dataProvider = ProductsDataProvider();
 
   @override
   void initState() {
     super.initState();
+    dataProvider.addListener(onDataProviderChanged);
     loadData();
+  }
+
+  @override
+  void dispose() {
+    dataProvider.removeListener(onDataProviderChanged);
+    super.dispose();
+  }
+
+  void onDataProviderChanged() {
+    setState(() {});
   }
 
   Future<void> loadData() async {
     var category = widget.category;
-    var productProvider = context.read<ProductsDataProvider>();
     print('Category ${category?.categoryId}');
-    productProvider.getProductsData(
+    dataProvider.getProductsData(
       categoryId: category?.categoryId,
     );
     setState(() {});
@@ -81,12 +90,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Widget buildListView(BuildContext context) {
-    var productProvider = context.read<ProductsDataProvider>();
 
     return ListView.builder(
-      itemCount: productProvider.allProducts.length,
+      itemCount: dataProvider.allProducts.length,
       itemBuilder: (BuildContext context, int index) {
-        Product product = productProvider.allProducts[index];
+        Product product = dataProvider.allProducts[index];
         print(product.imageUrl);
         return buildGestureDetector(context, product);
       },
@@ -103,11 +111,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    var productProvider = context.watch<ProductsDataProvider>();
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(20),
-        child: productProvider.loading
+        child: dataProvider.loading
             ? buildPlaceholder(context)
             : buildListView(context),
       ),

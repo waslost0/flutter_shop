@@ -13,8 +13,8 @@ class App extends StatelessWidget {
       initialRoute: '/',
       home: MainMenu(),
       routes: {
-        '/products': (context) => ProductScreen(),
-        '/category': (context) => CategoryScreen(),
+        '/products': (context) => ProductListScreen(),
+        '/category': (context) => ProductGridScreen(),
         '/detail': (context) => ProductDetailPage(),
       },
     );

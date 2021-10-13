@@ -6,7 +6,9 @@ import '../../categories/views/category_screen.dart';
 import '../../products/views/product_screen.dart';
 
 class MainMenu extends StatefulWidget {
-  MainMenu({Key? key}) : super(key: key);
+  MainMenu({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _MainMenuState createState() => _MainMenuState();
@@ -14,8 +16,8 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   var currentTab = [
-    ProductScreen(),
-    CategoryScreen(),
+    ProductListScreen(),
+    ProductGridScreen(),
   ];
 
   @override

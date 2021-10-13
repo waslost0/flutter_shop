@@ -12,10 +12,13 @@ class ProductApi extends BaseApi {
         params['categoryId'] = categoryId.toString();
       }
 
-      Map<String, dynamic> json =
-          await sendGetRequest('/api/common/product/list', params: params);
-      var jsonMap = json["data"] as List;
-      productList = jsonMap.map((e) => Product.fromJson(e)).toList();
+      Map<String, dynamic> json = await sendGetRequest(
+        '/api/common/product/list',
+        params: params,
+      );
+
+      List listData = json["data"] as List;
+      productList = listData.map((e) => Product.fromJson(e)).toList();
       return productList;
     } catch (error, stacktrace) {
       print(error);
@@ -24,15 +27,19 @@ class ProductApi extends BaseApi {
     return productList;
   }
 
-  Future<Product> getProductDetail(int productId) async {
+  Future<Product> getProductDetail(
+    int productId,
+  ) async {
     Product product = Product();
     try {
-      Map<String, dynamic> json = await sendGetRequest(
+      Map<String, dynamic> jsonData = await sendGetRequest(
         '/api/common/product/details',
-        params: {'productId': productId.toString()},
+        params: {
+          'productId': productId.toString(),
+        },
       );
-      json = json["data"];
-      product = Product.fromJson(json);
+      jsonData = jsonData["data"];
+      product = Product.fromJson(jsonData);
     } catch (error, stacktrace) {
       print(error);
       print(stacktrace);

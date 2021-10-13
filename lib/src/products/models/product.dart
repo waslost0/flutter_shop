@@ -17,9 +17,9 @@ class Product {
 
   int? productId;
   String? title;
-  dynamic productDescription;
+  String? productDescription;
   num? price;
-  dynamic rating;
+  num? rating;
   String? imageUrl;
   List<String>? images;
   int? isAvailableForSale;

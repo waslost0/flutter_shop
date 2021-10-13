@@ -5,22 +5,25 @@ import 'package:shop_flutter/src/products/models/product.dart';
 class ProductListItem extends StatelessWidget {
   final Product product;
 
-  const ProductListItem({Key? key, required this.product}) : super(key: key);
+  const ProductListItem({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: [
-          buildProductImage(context, product),
-          buildProductTitle(context, product),
-          buildProductPrice(context, product),
+          buildImage(context, product),
+          buildTitle(context, product),
+          buildPrice(context, product),
         ],
       ),
     );
   }
 
-  Widget buildProductImage(BuildContext context, Product product) {
+  Widget buildImage(BuildContext context, Product product) {
     return CachedNetworkImage(
       imageUrl: product.imageUrl ?? '',
       height: 150,
@@ -28,14 +31,16 @@ class ProductListItem extends StatelessWidget {
       errorWidget: (context, url, error) => Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/img_not_found.jpg'),
+            image: AssetImage(
+              'assets/images/img_not_found.jpg',
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildProductPrice(BuildContext context, Product product) {
+  Widget buildPrice(BuildContext context, Product product) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Text(
@@ -49,7 +54,7 @@ class ProductListItem extends StatelessWidget {
     );
   }
 
-  Widget buildProductTitle(BuildContext context, Product product) {
+  Widget buildTitle(BuildContext context, Product product) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Text(

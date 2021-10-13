@@ -6,7 +6,9 @@ import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/product_detail_provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({Key? key}) : super(key: key);
+  const ProductDetailPage({
+    Key? key,
+  }) : super(key: key,);
 
   @override
   State<StatefulWidget> createState() {
@@ -15,9 +17,12 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class ProductDetailPageState extends State<ProductDetailPage> {
+  Product? product;
+
   @override
   void initState() {
     super.initState();
+
     // loadData();
   }
 
@@ -37,7 +42,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductImage(Product product) {
+  Widget buildProductImage(BuildContext context,Product product) {
     return CachedNetworkImage(
       imageUrl: product.imageUrl ?? '',
       height: 150,
@@ -54,7 +59,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductTitle(Product product) {
+  Widget buildProductTitle(BuildContext context, Product product) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Text(
@@ -69,14 +74,14 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductDescription(productDescription) {
+  Widget buildProductDescription(BuildContext context, productDescription) {
     return Padding(
       padding: EdgeInsets.only(top: 0, left: 15, right: 15, bottom: 10),
       child: Text(productDescription.toString()),
     );
   }
 
-  Widget buildProductPrice(productPrice) {
+  Widget buildProductPrice(BuildContext context, productPrice) {
     return Center(
       child: Text(
         '${productPrice.toString()} ₽',
@@ -89,18 +94,18 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget buildProductDetail() {
+  Widget buildProductDetail(BuildContext context) {
     var product = ModalRoute.of(context)!.settings.arguments as Product;
     print(product.title);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        buildProductImage(product),
-        buildProductTitle(product),
+        buildProductImage(context, product),
+        buildProductTitle(context, product),
         if (product.productDescription != null)
-          buildProductDescription(product.productDescription),
-        buildProductPrice(product.price)
+          buildProductDescription(context, product.productDescription),
+        buildProductPrice(context, product.price)
       ],
     );
   }
@@ -111,7 +116,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
         padding: const EdgeInsets.all(2.0),
         child: Card(
           elevation: 10,
-          child: buildProductDetail(),
+          child: buildProductDetail(context),
         ),
       ),
     );

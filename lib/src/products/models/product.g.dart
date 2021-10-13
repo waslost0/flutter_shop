@@ -13,9 +13,9 @@ Product _$ProductFromJson(Map<String, dynamic> json) => $checkedCreate(
         final val = Product(
           productId: $checkedConvert('productId', (v) => v as int?),
           title: $checkedConvert('title', (v) => v as String?),
-          productDescription: $checkedConvert('productDescription', (v) => v),
+          productDescription: $checkedConvert('productDescription', (v) => v as String?),
           price: $checkedConvert('price', (v) => v as num?),
-          rating: $checkedConvert('rating', (v) => v),
+          rating: $checkedConvert('rating', (v) => v as num?),
           imageUrl: $checkedConvert('imageUrl', (v) => v as String?),
           images: $checkedConvert('images',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),

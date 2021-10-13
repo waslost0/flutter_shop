@@ -12,7 +12,7 @@ class BaseApi {
     String relativeUrl, {
     Map<String, dynamic>? params,
   }) async {
-    Map<String, dynamic> _json = {};
+    Map<String, dynamic> jsonData = {};
     try {
       var preparedParams = params ?? {};
       preparedParams['appKey'] = this.apiKey;
@@ -21,12 +21,12 @@ class BaseApi {
       final response = await httpClient.get(url);
       if (response.statusCode == 200) {
         var jsonString = response.body;
-        _json = json.decode(jsonString);
+        jsonData = json.decode(jsonString);
       }
     } catch (error, stacktrace) {
       print(error);
       print(stacktrace);
     }
-    return _json;
+    return jsonData;
   }
 }

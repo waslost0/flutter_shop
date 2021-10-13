@@ -8,13 +8,14 @@ class ProductsDataProvider with ChangeNotifier {
   bool loading = false;
   ProductApi productsApi = ProductApi();
 
-  getProductsData({categoryId}) async {
+  Future<void> getProductsData({
+    int? categoryId,
+  }) async {
     loading = true;
-    if (categoryId != null) {
-      allProducts = await productsApi.getProducts(categoryId: categoryId);
-    } else {
-      allProducts = await productsApi.getProducts();
-    }
+    // notifyListeners();
+    allProducts = await productsApi.getProducts(
+      categoryId: categoryId,
+    );
     loading = false;
     notifyListeners();
   }

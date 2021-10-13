@@ -5,10 +5,10 @@ class CategoryApi extends BaseApi {
   Future<List<Category>> getAllCategories() async {
     List<Category> categoryList = [];
     try {
-      Map<String, dynamic> json =
+      Map<String, dynamic> jsonData =
           await sendGetRequest('/api/common/category/list');
-      var listJson = json['data']['categories'] as List;
-      categoryList = listJson.map((e) => Category.fromJson(e)).toList();
+      List listData = jsonData['data']['categories'] as List;
+      categoryList = listData.map((e) => Category.fromJson(e)).toList();
       return categoryList;
     } catch (error, stacktrace) {
       print(error);

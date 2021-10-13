@@ -59,7 +59,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
         ),
       ),
-      body: _buildBody(context),
+      body: buildBody(context),
     );
   }
 
@@ -114,7 +114,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget buildBody(BuildContext context) {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(20),

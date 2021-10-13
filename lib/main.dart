@@ -17,12 +17,6 @@ void main() {
 }
 
 List<SingleChildWidget> providers = [
-  //TODO: remove, make not global. Create on product detail screen
-  ChangeNotifierProvider<CategoryDataProvider>(
-    create: (context) => CategoryDataProvider(),
-  ),
-  //TODO: remove
-
   ChangeNotifierProvider<BottomNavigationBarProvider>(
     create: (context) => BottomNavigationBarProvider(),
     // builder: (context) => BottomNavigationBarProvider(),

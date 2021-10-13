@@ -11,6 +11,7 @@ class CategoryDataProvider with ChangeNotifier {
 
   Future<void> getCategoriesData() async {
     loading = true;
+    notifyListeners();
     allCategories = await categoriesApi.getAllCategories();
     loading = false;
     notifyListeners();

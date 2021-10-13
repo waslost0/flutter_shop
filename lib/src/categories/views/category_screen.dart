@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/categories/providers/category_provider.dart';
 import 'package:shop_flutter/src/products/views/product_screen.dart';
@@ -18,16 +17,28 @@ class ProductGridScreen extends StatefulWidget {
 }
 
 class ProductGridScreenState extends State<ProductGridScreen> {
+  final CategoryDataProvider dataProvider = CategoryDataProvider();
   @override
   void initState() {
     super.initState();
+    dataProvider.addListener((onDataProviderChanged));
     loadData();
   }
 
-  Future<void> loadData() async {
-    var categoryDataProvider = context.read<CategoryDataProvider>();
-    categoryDataProvider.getCategoriesData();
+  void onDataProviderChanged(){
     setState(() {});
+  }
+
+  @override
+  void dispose(){
+    dataProvider.removeListener(onDataProviderChanged);
+    super.dispose();
+  }
+
+
+  Future<void> loadData() async {
+    dataProvider.getCategoriesData();
+    setState(() {}); // ??
   }
 
   @override
@@ -65,7 +76,7 @@ class ProductGridScreenState extends State<ProductGridScreen> {
 
   Widget buildGridView(
     BuildContext context,
-    CategoryDataProvider categoryDataProvider,
+    CategoryDataProvider dataProvider
   ) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -73,11 +84,10 @@ class ProductGridScreenState extends State<ProductGridScreen> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: categoryDataProvider.allCategories.length,
+      itemCount: dataProvider.allCategories.length,
       itemBuilder: (BuildContext context, int index) {
-        Category category = categoryDataProvider.allCategories[index];
+        Category category = dataProvider.allCategories[index];
         print(category.hasSubcategories);
-
         return gestureDetector(context, category);
       },
       scrollDirection: Axis.vertical,
@@ -85,10 +95,9 @@ class ProductGridScreenState extends State<ProductGridScreen> {
   }
 
   Widget buildBody(BuildContext context) {
-    var categoryDataProvider = context.watch<CategoryDataProvider>();
 
     return Container(
-      child: categoryDataProvider.loading
+      child: dataProvider.loading
           ? Container(
               child: Center(
                 child: CircularProgressIndicator(),
@@ -96,7 +105,7 @@ class ProductGridScreenState extends State<ProductGridScreen> {
             )
           : buildGridView(
               context,
-              categoryDataProvider,
+              dataProvider,
             ),
     );
   }

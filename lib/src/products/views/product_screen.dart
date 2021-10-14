@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/products_data_provider.dart';
@@ -22,10 +23,12 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductsDataProvider dataProvider = ProductsDataProvider();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     dataProvider.addListener(onDataProviderChanged);
     loadData();
   }
@@ -33,6 +36,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void dispose() {
     dataProvider.removeListener(onDataProviderChanged);
+    _scrollController.removeListener(_onScroll);
     super.dispose();
   }
 
@@ -46,7 +50,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
     dataProvider.getProductsData(
       categoryId: category?.categoryId,
     );
-    // setState(() {});
+  }
+
+  void _onScroll() {
+    print(_scrollController.position.extentAfter);
+    if (_isBottom) {
+      setState(() {
+        loadData();
+      });
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
   }
 
   @override
@@ -67,7 +86,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return ProductListItem(product: product);
   }
 
-  Widget buildPlaceholder(BuildContext context) {
+  Widget buildListViewPlaceHolder(BuildContext context) {
     return Container(
       child: Center(
         child: CircularProgressIndicator(),
@@ -91,10 +110,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Widget buildListView(BuildContext context) {
-
     return ListView.builder(
+      controller: _scrollController,
       itemCount: dataProvider.allProducts.length,
       itemBuilder: (BuildContext context, int index) {
+
         Product product = dataProvider.allProducts[index];
         print(product.imageUrl);
         return buildGestureDetector(context, product);
@@ -116,11 +136,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget buildBody(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: dataProvider.loading
-            ? buildPlaceholder(context)
-            : buildListView(context),
+      body: ChangeNotifierProvider.value(
+        value: dataProvider,
+        child: Consumer<ProductsDataProvider>(builder: (_, ctl, __) {
+          if (dataProvider.loading) {
+            return _buildProgressIndicator();
+          } else {
+            return buildListView(context);
+          }
+        }),
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

@@ -12,6 +12,7 @@ class ProductDetailDataProvider with ChangeNotifier {
     loading = true;
     notifyListeners();
     product = await productsApi.getProductDetail(productId);
+
     loading = false;
     notifyListeners();
   }

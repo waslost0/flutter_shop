@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/products_data_provider.dart';
@@ -24,12 +23,18 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductsDataProvider dataProvider = ProductsDataProvider();
   final _scrollController = ScrollController();
+  final GlobalKey listViewKey = GlobalKey();
+  String appBarTitle = 'Каталог';
+
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     dataProvider.addListener(onDataProviderChanged);
+    var category = widget.category;
+    print('Category ${category?.title}');
+    dataProvider.category = category;
     loadData();
   }
 
@@ -46,6 +51,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Future<void> loadData() async {
     var category = widget.category;
+    if (category != null) {
+      setState(() {
+        appBarTitle = category.title!;
+      });
+    }
     print('Category ${category?.categoryId}');
     dataProvider.getProductsData(
       categoryId: category?.categoryId,
@@ -53,11 +63,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   void _onScroll() {
-    print(_scrollController.position.extentAfter);
+    // print(_scrollController.position.extentAfter);
     if (_isBottom) {
-      setState(() {
-        loadData();
-      });
+      loadData();
     }
   }
 
@@ -73,9 +81,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            'Shop'.toUpperCase(),
-          ),
+          child: Text(appBarTitle),
         ),
       ),
       body: buildBody(context),
@@ -111,10 +117,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget buildListView(BuildContext context) {
     return ListView.builder(
+      key: listViewKey,
       controller: _scrollController,
       itemCount: dataProvider.allProducts.length,
       itemBuilder: (BuildContext context, int index) {
-
         Product product = dataProvider.allProducts[index];
         print(product.imageUrl);
         return buildGestureDetector(context, product);
@@ -136,15 +142,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget buildBody(BuildContext context) {
     return Scaffold(
-      body: ChangeNotifierProvider.value(
-        value: dataProvider,
-        child: Consumer<ProductsDataProvider>(builder: (_, ctl, __) {
-          if (dataProvider.loading) {
-            return _buildProgressIndicator();
-          } else {
-            return buildListView(context);
-          }
-        }),
+      body: Container(
+        child: dataProvider.loading && dataProvider.allProducts.isEmpty
+            ? _buildProgressIndicator()
+            : buildListView(context),
       ),
     );
   }

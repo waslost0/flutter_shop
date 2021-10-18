@@ -4,10 +4,13 @@ import 'package:shop_flutter/src/service/base_api.dart';
 class ProductApi extends BaseApi {
   Future<List<Product>> getProducts({
     int? categoryId,
+    int offset = 0,
   }) async {
     List<Product> productList = [];
     try {
-      Map<String, dynamic> params = {};
+      Map<String, dynamic> params = {
+        "offset": offset.toString(),
+      };
       if (categoryId != null) {
         params['categoryId'] = categoryId.toString();
       }
@@ -19,7 +22,6 @@ class ProductApi extends BaseApi {
 
       List listData = json["data"] as List;
       productList = listData.map((e) => Product.fromJson(e)).toList();
-      return productList;
     } catch (error, stacktrace) {
       print(error);
       print(stacktrace);

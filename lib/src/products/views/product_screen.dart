@@ -26,7 +26,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
   final GlobalKey listViewKey = GlobalKey();
   String appBarTitle = 'Каталог';
 
-
   @override
   void initState() {
     super.initState();
@@ -81,8 +80,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(appBarTitle),
+        centerTitle: true,
+        title: Text(
+          appBarTitle,
         ),
       ),
       body: buildBody(context),

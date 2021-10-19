@@ -56,10 +56,9 @@ class CategoryGridScreenState extends State<CategoryGridScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            appBarTitle,
-          ),
+        centerTitle: true,
+        title: Text(
+          appBarTitle,
         ),
       ),
       body: buildBody(context),

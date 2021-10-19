@@ -6,14 +6,17 @@ import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/products/models/product.dart';
 import 'package:shop_flutter/src/products/providers/products_data_provider.dart';
 import 'package:shop_flutter/src/products/views/product_detail.dart';
-import 'package:shop_flutter/src/products/views/product_list_item.dart';
+import 'package:shop_flutter/src/products/widgets/product_list_item.dart';
+import 'package:shop_flutter/src/products/widgets/search_bar.dart';
 
 class ProductListScreen extends StatefulWidget {
   final Category? category;
+  final String? searchText;
 
   const ProductListScreen({
     Key? key,
     this.category,
+    this.searchText,
   }) : super(key: key);
 
   @override
@@ -23,6 +26,8 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductsDataProvider dataProvider = ProductsDataProvider();
   final _scrollController = ScrollController();
+  final searchTextFieldController = TextEditingController();
+
   final GlobalKey listViewKey = GlobalKey();
   String appBarTitle = 'Каталог';
 
@@ -42,6 +47,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   void dispose() {
     dataProvider.removeListener(onDataProviderChanged);
     _scrollController.removeListener(_onScroll);
+    searchTextFieldController.dispose();
     super.dispose();
   }
 
@@ -51,15 +57,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Future<void> loadData() async {
     var category = widget.category;
+    var searchText = widget.searchText;
     if (category != null) {
       setState(() {
         appBarTitle = category.title!;
       });
     }
     print('Category ${category?.categoryId}');
+    print('searchText $searchText');
     dataProvider.getProductsData(
-      categoryId: category?.categoryId,
-    );
+        categoryId: category?.categoryId, searchText: searchText);
   }
 
   void _onScroll() {
@@ -78,19 +85,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var searchText = widget.searchText;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          appBarTitle,
-        ),
+      appBar: SearchAppBar(
+        searchText: searchText,
       ),
       body: buildBody(context),
     );
-  }
-
-  Widget buildCard(BuildContext context, Product product) {
-    return ProductListItem(product: product);
   }
 
   Widget buildListViewPlaceHolder(BuildContext context) {
@@ -109,9 +110,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
           product,
         );
       },
-      child: buildCard(
-        context,
-        product,
+      child: ProductListItem(
+        product: product,
       ),
     );
   }

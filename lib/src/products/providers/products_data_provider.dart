@@ -12,6 +12,7 @@ class ProductsDataProvider with ChangeNotifier {
 
   Future<void> getProductsData({
     int? categoryId,
+    String? searchText,
   }) async {
     loading = true;
     notifyListeners();
@@ -20,11 +21,11 @@ class ProductsDataProvider with ChangeNotifier {
       return;
     }
     var newProducts = await productsApi.getProducts(
-      categoryId: categoryId,
-      offset: allProducts.length,
-    );
-    await Future.delayed(Duration(seconds: 1));
-    if (newProducts.length == 0){
+        categoryId: categoryId,
+        offset: allProducts.length,
+        searchText: searchText);
+    // await Future.delayed(Duration(seconds: 1));
+    if (newProducts.length == 0) {
       hasReachedMax = true;
       return;
     }

@@ -35,6 +35,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     var category = widget.category;
     print('Category ${category?.title}');
     dataProvider.category = category;
+    print('Category ${category?.title}');
     loadData();
   }
 
@@ -144,13 +145,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return Scaffold(
       body: Container(
         child: dataProvider.loading && dataProvider.allProducts.isEmpty
-            ? _buildProgressIndicator()
+            ? buildProgressIndicator()
             : buildListView(context),
       ),
     );
   }
 
-  Widget _buildProgressIndicator() {
+  Widget buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),
       child: new Center(

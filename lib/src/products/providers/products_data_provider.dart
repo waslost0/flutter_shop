@@ -23,7 +23,7 @@ class ProductsDataProvider with ChangeNotifier {
       categoryId: categoryId,
       offset: allProducts.length,
     );
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     if (newProducts.length == 0){
       hasReachedMax = true;
       return;

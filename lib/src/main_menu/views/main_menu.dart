@@ -17,7 +17,7 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   var currentTab = [
     ProductListScreen(),
-    ProductGridScreen(),
+    CategoryGridScreen(),
   ];
 
   @override

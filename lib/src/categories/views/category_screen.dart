@@ -5,19 +5,24 @@ import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/categories/providers/category_provider.dart';
 import 'package:shop_flutter/src/products/views/product_screen.dart';
 
-class ProductGridScreen extends StatefulWidget {
-  const ProductGridScreen({
+class CategoryGridScreen extends StatefulWidget {
+  final Category? parentCategory;
+
+  const CategoryGridScreen({
     Key? key,
+    this.parentCategory,
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return ProductGridScreenState();
+    return CategoryGridScreenState();
   }
 }
 
-class ProductGridScreenState extends State<ProductGridScreen> {
+class CategoryGridScreenState extends State<CategoryGridScreen> {
   final CategoryDataProvider dataProvider = CategoryDataProvider();
+  String appBarTitle = "Категории";
+
   @override
   void initState() {
     super.initState();
@@ -25,20 +30,26 @@ class ProductGridScreenState extends State<ProductGridScreen> {
     loadData();
   }
 
-  void onDataProviderChanged(){
+  void onDataProviderChanged() {
     setState(() {});
   }
 
   @override
-  void dispose(){
+  void dispose() {
     dataProvider.removeListener(onDataProviderChanged);
     super.dispose();
   }
 
-
   Future<void> loadData() async {
-    dataProvider.getCategoriesData();
-    setState(() {}); // ??
+    var parentCategory = widget.parentCategory;
+    if (parentCategory != null) {
+      print(parentCategory.title!);
+      appBarTitle = parentCategory.title!;
+    }
+    dataProvider.getCategoriesData(
+      parentId: parentCategory?.categoryId,
+    );
+    setState(() {});
   }
 
   @override
@@ -47,7 +58,7 @@ class ProductGridScreenState extends State<ProductGridScreen> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            'categories'.toUpperCase(),
+            appBarTitle,
           ),
         ),
       ),
@@ -58,14 +69,23 @@ class ProductGridScreenState extends State<ProductGridScreen> {
   Widget gestureDetector(BuildContext context, Category category) {
     return GestureDetector(
       onTap: () {
-        //TODO: try check category.hasSubcategories. Open CategoryScreen with argument = parentCategory
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ProductListScreen(
-              category: category,
+        if (category.hasSubcategories == 0) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ProductListScreen(
+                category: category,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CategoryGridScreen(
+                parentCategory: category,
+              ),
+            ),
+          );
+        }
       },
       child: buildCard(
         context,
@@ -75,18 +95,16 @@ class ProductGridScreenState extends State<ProductGridScreen> {
   }
 
   Widget buildGridView(
-    BuildContext context,
-    CategoryDataProvider dataProvider
-  ) {
+      BuildContext context, CategoryDataProvider dataProvider) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 200,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: dataProvider.allCategories.length,
+      itemCount: dataProvider.listCategories.length,
       itemBuilder: (BuildContext context, int index) {
-        Category category = dataProvider.allCategories[index];
+        Category category = dataProvider.listCategories[index];
         print(category.hasSubcategories);
         return gestureDetector(context, category);
       },
@@ -95,7 +113,6 @@ class ProductGridScreenState extends State<ProductGridScreen> {
   }
 
   Widget buildBody(BuildContext context) {
-
     return Container(
       child: dataProvider.loading
           ? Container(

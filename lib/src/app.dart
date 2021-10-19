@@ -14,7 +14,7 @@ class App extends StatelessWidget {
       home: MainMenu(),
       routes: {
         '/products': (context) => ProductListScreen(),
-        '/category': (context) => ProductGridScreen(),
+        '/category': (context) => CategoryGridScreen(),
         '/detail': (context) => ProductDetailPage(),
       },
     );

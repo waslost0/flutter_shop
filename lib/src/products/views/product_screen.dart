@@ -38,7 +38,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
     var category = widget.category;
     print('Category ${category?.title}');
     // dataProvider.category = category;
-    print('Category ${category?.title}');
     loadData();
   }
 
@@ -57,11 +56,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
     var category = widget.category;
     var searchText = widget.searchText;
     if (category != null) {
-      setState(() {
+
         appBarTitle = category.title!;
-      });
+
     }
-    print('Category ${category?.categoryId}');
+    print(category?.title);
     print('searchText $searchText');
     dataProvider.getProductsData(
         categoryId: category?.categoryId, searchText: searchText);

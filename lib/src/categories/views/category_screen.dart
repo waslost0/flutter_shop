@@ -5,6 +5,8 @@ import 'package:shop_flutter/src/categories/models/category.dart';
 import 'package:shop_flutter/src/categories/providers/category_provider.dart';
 import 'package:shop_flutter/src/products/views/product_screen.dart';
 
+import '../widgets/caregory_grid_item.dart';
+
 class CategoryGridScreen extends StatefulWidget {
   final Category? parentCategory;
 
@@ -86,9 +88,8 @@ class CategoryGridScreenState extends State<CategoryGridScreen> {
           );
         }
       },
-      child: buildCard(
-        context,
-        category,
+      child: CategoryGridItem(
+        category: category,
       ),
     );
   }
@@ -123,59 +124,6 @@ class CategoryGridScreenState extends State<CategoryGridScreen> {
               context,
               dataProvider,
             ),
-    );
-  }
-
-  Widget buildCard(BuildContext context, Category category) {
-    return Card(
-      child: Column(
-        children: [
-          buildImage(context, category),
-          buildCategoryTitle(context, category),
-        ],
-      ),
-    );
-  }
-
-  Widget buildImage(BuildContext context, Category category) {
-    return Expanded(
-      flex: 2,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: CachedNetworkImage(
-          imageUrl: category.imageUrl ?? '',
-          placeholder: (context, url) => Center(
-            child: CircularProgressIndicator(),
-          ),
-          errorWidget: (context, url, error) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/img_not_found.jpg',
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildCategoryTitle(BuildContext context, Category category) {
-    return Expanded(
-      flex: 1,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Text(
-          category.title.toString(),
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            fontSize: 15,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
     );
   }
 }

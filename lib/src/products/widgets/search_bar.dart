@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shop_flutter/src/app.dart';
 import 'package:shop_flutter/src/products/views/product_screen.dart';
 
 class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -13,7 +12,7 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
         super(key: key);
 
   @override
-  final Size preferredSize; // default is 56.0
+  final Size preferredSize;
 
   @override
   _SearchAppBarState createState() => _SearchAppBarState();
@@ -25,13 +24,12 @@ class _SearchAppBarState extends State<SearchAppBar> {
 
   Icon customIcon = Icon(Icons.search);
   Widget customSearchBar = Text('Каталог');
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     var searchText = widget.searchText;
+
     return AppBar(
-      key: _scaffoldKey,
       centerTitle: true,
       title: searchText == null ? customSearchBar : Text(searchText),
       actions: [

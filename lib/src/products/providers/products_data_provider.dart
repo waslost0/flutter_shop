@@ -8,7 +8,7 @@ class ProductsDataProvider with ChangeNotifier {
   bool loading = false;
   bool hasReachedMax = false;
   ProductApi productsApi = ProductApi();
-  Category? category;
+  // Category? category;
 
   Future<void> getProductsData({
     int? categoryId,
@@ -20,6 +20,7 @@ class ProductsDataProvider with ChangeNotifier {
     if (hasReachedMax) {
       return;
     }
+    print("Offset: ${allProducts.length}");
     var newProducts = await productsApi.getProducts(
         categoryId: categoryId,
         offset: allProducts.length,

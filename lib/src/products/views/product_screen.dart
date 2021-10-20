@@ -26,7 +26,6 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductsDataProvider dataProvider = ProductsDataProvider();
   final _scrollController = ScrollController();
-  final searchTextFieldController = TextEditingController();
 
   final GlobalKey listViewKey = GlobalKey();
   String appBarTitle = 'Каталог';
@@ -38,7 +37,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     dataProvider.addListener(onDataProviderChanged);
     var category = widget.category;
     print('Category ${category?.title}');
-    dataProvider.category = category;
+    // dataProvider.category = category;
     print('Category ${category?.title}');
     loadData();
   }
@@ -47,7 +46,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
   void dispose() {
     dataProvider.removeListener(onDataProviderChanged);
     _scrollController.removeListener(_onScroll);
-    searchTextFieldController.dispose();
     super.dispose();
   }
 
@@ -71,7 +69,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   void _onScroll() {
     // print(_scrollController.position.extentAfter);
-    if (_isBottom) {
+    if (_isBottom && !dataProvider.loading) {
       loadData();
     }
   }
@@ -118,7 +116,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget buildListView(BuildContext context) {
     return ListView.builder(
-      key: listViewKey,
+      // key: listViewKey,
       controller: _scrollController,
       itemCount: dataProvider.allProducts.length,
       itemBuilder: (BuildContext context, int index) {
